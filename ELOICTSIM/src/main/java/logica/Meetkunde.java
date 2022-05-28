@@ -110,11 +110,7 @@ public class Meetkunde {
         int br = lokaal.getB();
         int hr = lokaal.getH();
         //TODO: overloop de 4 randen van de rechthoek en kijk of je overlapt
-        boolean lijnstuk1 = cirkelOverlaptMetLijnstuk(xr, yr, xr, (yr + hr), xc, yc, straal);
-        boolean lijnstuk2 = cirkelOverlaptMetLijnstuk(xr, yr, (xr + br), yr, xc, yc, straal);
-        boolean lijnstuk3 = cirkelOverlaptMetLijnstuk(xr, (yr + hr), (xr + br), (yr + hr), xc, yc, straal);
-        boolean lijnstuk4 = cirkelOverlaptMetLijnstuk((xr + br), yr, (xr + br), (yr + hr), xc, yc, straal);
-        return lijnstuk1 || lijnstuk2 || lijnstuk3 || lijnstuk4;
+        return cirkelOverlaptMetRechthoek(xr, yr, br, hr, xc, yc, straal);
     }
 
     public static boolean cirkelOverlaptMetCirkel(int x1, int y1, int x2, int y2, int r1, int r2){
