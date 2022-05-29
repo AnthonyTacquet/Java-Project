@@ -97,7 +97,7 @@ public class FireBreath {
 
     public void createThread(){
         thread = new Thread(() -> {
-            while (!gameover && !dead){
+            while (!gameover && !dead && !collision){
                 setX(getX() - 5);
                 if (!collision) {
                     if (!gameover && !dead){
@@ -110,7 +110,6 @@ public class FireBreath {
                     }
 
                 } else {
-                    collision = false;
                     dead = true;
                 }
             }

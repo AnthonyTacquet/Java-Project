@@ -119,13 +119,13 @@ public class Bowser {
                 }
                 while (!gameover && !dead){
                     int delay = (int) (Math.random() * 10000 + 1000);
-                    for (int i = 0; i < 9; i++){
+                    for (int i = 0; i < 11; i++){
                         switch (i){
-                            case 0,1,2: y-=5; break;
-                            case 3: y-=2; break;
-                            case 4: break;
-                            case 5: y+=2; break;
-                            case 6,7,8: y+=5; break;
+                            case 0,1,2,3: y-=5; break;
+                            case 4: y-=2; break;
+                            case 5: break;
+                            case 6: y+=2; break;
+                            case 7,8,9,10: y+=5; break;
                         }
 
                         if (i == 6)
