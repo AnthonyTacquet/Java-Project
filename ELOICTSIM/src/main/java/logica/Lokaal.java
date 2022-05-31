@@ -1,12 +1,12 @@
 package logica;
 
 public class Lokaal {
-    int x;
-    int y;
-    int b;
-    int h;
-    String naam;
-    String code;
+    private int x;
+    private int y;
+    private int b;
+    private int h;
+    private String naam;
+    private String code;
 
     public Lokaal(){
         this.x = 0;

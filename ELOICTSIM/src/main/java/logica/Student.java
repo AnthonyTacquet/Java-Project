@@ -6,13 +6,16 @@ public class Student {
     private int x;
     private int y;
     private int radius;
-    String naam = "";
-    String voornaam = "";
-    String beschrijving = "";
-    String beroepsprofiel = "";
-    ArrayList<String> keuzevakken = new ArrayList<>();
-    ArrayList<String> verplichtevakken = new ArrayList<>();
+    private String naam = "";
+    private String voornaam = "";
+    private String beschrijving = "";
+    private String beroepsprofiel = "";
+    private ArrayList<String> keuzevakken = new ArrayList<>();
+    private ArrayList<String> verplichtevakken = new ArrayList<>();
 
+    private boolean collision = false;
+    private boolean gameover = false;
+    private boolean repaint = false;
 
     public Student(){
         this.x = 0;
@@ -46,6 +49,50 @@ public class Student {
         this.voornaam = voornaam;
         this.beschrijving = beschrijving;
         this.beroepsprofiel = beroepsprofiel;
+    }
+
+    public Student(Student student){
+        this.naam = student.getNaam();
+        this.x = student.getX();
+        this.y = student.getY();
+        this.radius = student.getRadius();
+        this.voornaam = student.getVoornaam();
+        this.beschrijving = student.getBeschrijving();
+        this.beroepsprofiel = student.getBeroepsprofiel();
+        this.keuzevakken = student.getKeuzevakken();
+        this.verplichtevakken = student.getVerplichtevakken();
+    }
+
+
+
+    public String getKeuzevakkenString() {
+        int count = 0;
+        StringBuilder string = new StringBuilder(Hulp.removeDuplicates(getKeuzevakken()).toString());
+        for (int i = 0; i < string.length(); i++){
+            if (string.charAt(i) == ','){
+                count++;
+            }
+            if (count == 5){
+                count = 0;
+                string.replace(i, i+1, "<br/>");
+            }
+        }
+        return string.toString();
+    }
+
+    public String getVerplichtevakkenString() {
+        int count = 0;
+        StringBuilder string = new StringBuilder(Hulp.removeDuplicates(getVerplichtevakken()).toString());
+        for (int i = 0; i < string.length(); i++){
+            if (string.charAt(i) == ','){
+                count++;
+            }
+            if (count == 4){
+                count = 0;
+                string.replace(i, i+1, "<br/>");
+            }
+        }
+        return string.toString();
     }
 
     public int getX(){
@@ -84,34 +131,16 @@ public class Student {
         return verplichtevakken;
     }
 
-    public String getKeuzevakkenString() {
-        int count = 0;
-        StringBuilder string = new StringBuilder(Hulp.removeDuplicates(getKeuzevakken()).toString());
-        for (int i = 0; i < string.length(); i++){
-            if (string.charAt(i) == ','){
-                count++;
-            }
-            if (count == 5){
-                count = 0;
-                string.replace(i, i+1, "<br/>");
-            }
-        }
-        return string.toString();
+    public boolean isRepaint() {
+        return repaint;
     }
 
-    public String getVerplichtevakkenString() {
-        int count = 0;
-        StringBuilder string = new StringBuilder(Hulp.removeDuplicates(getVerplichtevakken()).toString());
-        for (int i = 0; i < string.length(); i++){
-            if (string.charAt(i) == ','){
-                count++;
-            }
-            if (count == 4){
-                count = 0;
-                string.replace(i, i+1, "<br/>");
-            }
-        }
-        return string.toString();
+    public boolean isCollision() {
+        return collision;
+    }
+
+    public boolean isGameover() {
+        return gameover;
     }
 
     public void setX(int x){
@@ -150,8 +179,72 @@ public class Student {
         this.verplichtevakken = verplichtevakken;
     }
 
+    public void setRepaint(boolean repaint) {
+        this.repaint = repaint;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public void setGameover(boolean gameover) {
+        this.gameover = gameover;
+    }
+
     public boolean intersect(int xc, int yc, int cirkelRadius){
         return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+    }
+    public void createThread(){
+        Thread thread = new Thread(() -> {
+            boolean skip = false;
+            int direction = 0;
+            while (true){
+                if (!skip)
+                   direction = (int) (Math.random() * 4);
+                //System.out.println(direction);
+                for (int j = 0; j < (int) (Math.random() * 25 + 5); j++) {
+                    int distance = 5;
+                    if (skip)
+                        distance = 10;
+                    switch (direction){
+                        case 0: x -= distance; break;
+                        case 1: y -= distance; break;
+                        case 2: x += distance; break;
+                        case 3: y += distance; break;
+                    }
+                    skip = false;
+
+                    if (!collision) {
+                        if (!gameover) {
+                            repaint = true;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        skip = true;
+                        collision = false;
+                        j = 30;
+                        switch (direction){
+                            case 0: direction = 2; break;
+                            case 1: direction = 3; break;
+                            case 2: direction = 0; break;
+                            case 3: direction = 1; break;
+                        }
+                    }
+                }
+                if (!gameover) {
+                    try {
+                        Thread.sleep((int) (Math.random() * 1000 + 500));
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        thread.start();
     }
 
 

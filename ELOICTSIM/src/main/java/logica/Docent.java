@@ -6,10 +6,10 @@ public class Docent {
     private int x;
     private int y;
     private int radius;
-    String naam = "";
-    String voornaam = "";
-    String beschrijving = "";
-    ArrayList<String> vakken = new ArrayList<>();
+    private String naam = "";
+    private String voornaam = "";
+    private String beschrijving = "";
+    private ArrayList<String> vakken = new ArrayList<>();
 
     public Docent(){
         this.x = 0;

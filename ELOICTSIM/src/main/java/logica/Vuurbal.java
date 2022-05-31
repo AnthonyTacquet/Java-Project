@@ -1,58 +1,22 @@
 package logica;
 
 public class Vuurbal {
-    int x;
-    int y;
-    int startx = 0;
-    int starty = 0;
-    int radius = 8;
+    private int x;
+    private int y;
+    private int radius = 8;
 
-    public boolean isLinks() {
-        return links;
-    }
+    private boolean links = false;
+    private boolean stop = false;
+    private boolean bounce = false;
+    private boolean down = true;
+    private int height = 0;
 
-    public void setLinks(boolean links) {
-        this.links = links;
-    }
+    private boolean gameover = false;
+    private boolean dead = false;
+    private boolean repaint = false;
+    private boolean collision = false;
 
-    public Thread getThread() {
-        return thread;
-    }
-
-    public void setThread(Thread thread) {
-        this.thread = thread;
-    }
-
-    boolean links = false;
-
-    public boolean isStop() {
-        return stop;
-    }
-
-    public void setStop(boolean stop) {
-        this.stop = stop;
-    }
-
-    boolean stop = false;
-
-    public boolean isBounce() {
-        return bounce;
-    }
-
-    public void setBounce(boolean bounce) {
-        this.bounce = bounce;
-    }
-
-    boolean bounce = false;
-    boolean down = true;
-    int height = 0;
-
-    boolean gameover = false;
-    boolean dead = false;
-    boolean repaint = false;
-    boolean collision = false;
-
-    Thread thread;
+    private Thread thread;
 
     public Vuurbal(){
         this.x = 0;
@@ -62,23 +26,17 @@ public class Vuurbal {
     public Vuurbal(int x, int y){
         this.x = x;
         this.y = y;
-        this.startx = x;
-        this.starty = y;
     }
 
     public Vuurbal(int x, int y, int radius){
         this.x = x;
         this.y = y;
-        this.startx = x;
-        this.starty = y;
         this.radius = radius;
     }
 
     public Vuurbal(int x, int y, int radius, boolean links, boolean createthread){
         this.x = x;
         this.y = y;
-        this.startx = x;
-        this.starty = y;
         this.radius = radius;
         this.links = links;
         if (createthread)
@@ -113,6 +71,22 @@ public class Vuurbal {
         return dead;
     }
 
+    public boolean isBounce() {
+        return bounce;
+    }
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public boolean isLinks() {
+        return links;
+    }
+
+    public Thread getThread() {
+        return thread;
+    }
+
     public void setX(int x){
         this.x = x;
     }
@@ -140,6 +114,23 @@ public class Vuurbal {
     public void setDead(boolean dead) {
         this.dead = dead;
     }
+
+    public void setLinks(boolean links) {
+        this.links = links;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
+
+    public void setBounce(boolean bounce) {
+        this.bounce = bounce;
+    }
+
+    public void setThread(Thread thread) {
+        this.thread = thread;
+    }
+
 
     public void createThread(){
         if (thread != null)

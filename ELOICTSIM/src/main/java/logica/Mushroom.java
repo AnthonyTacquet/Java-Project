@@ -1,21 +1,21 @@
 package logica;
 
 public class Mushroom {
-    int x;
-    int y;
-    int startx = 0;
-    int starty = 0;
-    int radius = 8;
-    boolean collideLeft = false;
-    boolean collideUp = false;
-    boolean goingLeft = false;
-    boolean goingUp = true;
-    boolean collideDown = false;
-    boolean collideRight = false;
-    boolean gameover = false;
-    boolean dead = false;
-    boolean repaint = false;
-    Thread thread;
+    private int x;
+    private int y;
+    private int startx = 0;
+    private int starty = 0;
+    private int radius = 8;
+    private boolean collideLeft = false;
+    private boolean collideUp = false;
+    private boolean goingLeft = false;
+    private boolean goingUp = true;
+    private boolean collideDown = false;
+    private boolean collideRight = false;
+    private boolean gameover = false;
+    private boolean dead = false;
+    private boolean repaint = false;
+    private Thread thread;
 
     public Mushroom(){
         this.x = 0;

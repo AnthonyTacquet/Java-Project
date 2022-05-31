@@ -1,12 +1,12 @@
 package logica;
 
 public class FireBreath {
-    int x;
-    int y;
-    int startx = 0;
-    int starty = 0;
-    int radius = 8;
-    Thread thread;
+    private int x;
+    private int y;
+    private int startx = 0;
+    private int starty = 0;
+    private int radius = 8;
+    private Thread thread;
 
     boolean gameover = false;
     boolean dead = false;

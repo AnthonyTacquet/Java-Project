@@ -1,16 +1,16 @@
 package logica;
 
 public class Goomba {
-    int x;
-    int y;
-    int startx = 0;
-    int starty = 0;
-    int radius = 8;
+    private int x;
+    private int y;
+    private int startx = 0;
+    private int starty = 0;
+    private int radius = 8;
 
-    boolean gameover = false;
-    boolean dead = false;
-    boolean repaint = false;
-    boolean collision = false;
+    private boolean gameover = false;
+    private boolean dead = false;
+    private boolean repaint = false;
+    private boolean collision = false;
 
     Thread thread;
 

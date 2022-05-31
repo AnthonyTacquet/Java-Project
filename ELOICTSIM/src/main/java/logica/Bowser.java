@@ -1,19 +1,19 @@
 package logica;
 
 public class Bowser {
-    int x;
-    int y;
-    int startx = 0;
-    int starty = 0;
-    int radius = 32;
-    int hit = 0;
+    private int x;
+    private int y;
+    private int startx = 0;
+    private int starty = 0;
+    private int radius = 32;
+    private int hit = 0;
 
-    boolean gameover = false;
-    boolean dead = false;
-    boolean repaint = false;
-    boolean shiver = false;
+    private boolean gameover = false;
+    private boolean dead = false;
+    private boolean repaint = false;
+    private boolean shiver = false;
 
-    Thread thread;
+    private Thread thread;
 
     public Bowser(){
         this.x = 0;
@@ -98,7 +98,6 @@ public class Bowser {
     public void addHit(){
         this.hit++;
     }
-
 
     public void createThread(){
         if (thread != null)
