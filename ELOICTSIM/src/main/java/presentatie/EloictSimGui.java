@@ -54,6 +54,10 @@ public class EloictSimGui extends javax.swing.JPanel{
     private JPanel gameOverPanel;
     private JButton restartButton;
     private JButton exitButton;
+    private JLabel beschrijvingLokaal;
+    private JButton easyButton;
+    private JButton hardButton;
+    private JList<String> keuzeLijst;
 
     private Image background;
     private Image lokaalKlein, studentKlein, docentKlein;
@@ -68,12 +72,14 @@ public class EloictSimGui extends javax.swing.JPanel{
 
     Thread studentenThread, mushroomThread, goombaThread, bowserThread, vuurbalThread;
 
-    Bowser bowser;
+    Bowser bowser = new Bowser(5000, 0, 60);
 
     ArrayList<Lokaal> lokalen = new ArrayList<>();
     ArrayList<Deur> deuren = new ArrayList<>();
     ArrayList<Student> studenten = new ArrayList<>();
     ArrayList<Docent> docenten = new ArrayList<>();
+    ArrayList<InformatiePunten> informatiePunten = new ArrayList<>();
+
     ArrayList<Goomba> goomba = new ArrayList<>();
     ArrayList<Mushroom> mushroom = new ArrayList<>();
     ArrayList<FireBreath> fireBreath = new ArrayList<>();
@@ -95,10 +101,16 @@ public class EloictSimGui extends javax.swing.JPanel{
     boolean links = false;
     boolean gameover = false;
     boolean again = true;
+    boolean difficult = true;
     int backgroundx = 0;
     int backgroundy = 0;
 
     public EloictSimGui() {
+        /*DefaultListModel<String> lijst = new DefaultListModel<>();
+        lijst.addElement("Easy");
+        lijst.addElement("Hard");
+        keuzeLijst = new JList<>(lijst);*/
+
         restartButton.setOpaque(false);
         restartButton.setContentAreaFilled(false);
         restartButton.setBorder(new MatteBorder(1,1,1,1, Color.WHITE));
@@ -118,7 +130,8 @@ public class EloictSimGui extends javax.swing.JPanel{
                 if (gamePanel.isVisible()){
                     docentenPanel();
                     studentenPanel();
-                    lokalenPanel();
+                    //lokalenPanel();
+                    informatiePanel();
                     switch (e.getKeyCode()){
                         case KeyEvent.VK_LEFT: verplaatsen(Pijltjes.LINKS); break;
                         case KeyEvent.VK_UP: verplaatsen(Pijltjes.BOVEN); break;
@@ -167,13 +180,22 @@ public class EloictSimGui extends javax.swing.JPanel{
                     System.exit(0);
             }
         });
-        titleScreenPanel.addKeyListener(new KeyAdapter() {
+        easyButton.addActionListener(new ActionListener() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                super.keyPressed(e);
-                if (titleScreenPanel.isVisible())
-                    if (e.getKeyCode() == 32)
-                        loadGame();
+            public void actionPerformed(ActionEvent e) {
+                if (titleScreenPanel.isVisible()){
+                    difficult = false;
+                    loadGame();
+                }
+            }
+        });
+        hardButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (titleScreenPanel.isVisible()){
+                    difficult = true;
+                    loadGame();
+                }
             }
         });
     }
@@ -191,9 +213,8 @@ public class EloictSimGui extends javax.swing.JPanel{
         x = 50;
         y = 250;
 
-        fireballPanel.setPreferredSize(new Dimension(32, 16));
+        fireballPanel.setPreferredSize(new Dimension(80, 8));
         setPlayground();
-        initializeDefaultThreads();
         checkThread();
         marioCurrent = marios[0];
         tekenPanel.repaint();
@@ -347,7 +368,7 @@ public class EloictSimGui extends javax.swing.JPanel{
 
     }
 
-    public void lokalenPanel(){
+    /*public void lokalenPanel(){
         boolean found = false;
         for (int i = 0; i < lokalen.size(); i++){
             if (Meetkunde.studentInLokaal(lokalen.get(i), this.x, this.y, this.radius)){
@@ -373,6 +394,37 @@ public class EloictSimGui extends javax.swing.JPanel{
         if (numberlokaal == -10){
             lokaalNaam.setText("");
             lokaalCode.setText("");
+        }
+    }*/
+
+    public void informatiePanel(){
+        boolean found = false;
+        for (int i = 0; i < informatiePunten.size(); i++){
+            if (informatiePunten.get(i).intersect(this.x, this.y, 60)){
+                numberlokaal = i;
+                found = true;
+            }
+        }
+        if (!found){
+            numberlokaal = -10;
+            lastlokaal = -100;
+        }
+
+        if (numberlokaal != -10) {
+            if (lastlokaal == numberlokaal)
+                return;
+            else
+                lastlokaal = numberlokaal;
+
+            lokaalNaam.setText(informatiePunten.get(numberlokaal).getNaam());
+            lokaalCode.setText(informatiePunten.get(numberlokaal).getLokaalcode());
+            beschrijvingLokaal.setText("<html>" + informatiePunten.get(numberlokaal).getBeschrijving() + "</html>");
+        }
+
+        if (numberlokaal == -10){
+            lokaalNaam.setText("");
+            lokaalCode.setText("");
+            beschrijvingLokaal.setText("");
         }
     }
 
@@ -536,10 +588,14 @@ public class EloictSimGui extends javax.swing.JPanel{
                     g2.drawLine(deuren.get(i).getX1(), deuren.get(i).getY1(), deuren.get(i).getX2(), deuren.get(i).getY2());
                 }
 
+                for (int i = 0; i < informatiePunten.size(); i++){
+                    g2.drawImage(lokaalKlein, informatiePunten.get(i).getX(), informatiePunten.get(i).getY(), null);
+                }
+
                 g2.setColor(SPELER_KLEUR);
                 g2.drawImage(marioCurrent, x - radius, y - radius, null);
 
-                if (!bowser.isDead()) {
+                if (!bowser.isDead() && difficult) {
                     g2.drawImage(bowsery, bowser.getX() - bowser.getRadius(), bowser.getY() - bowser.getRadius(), null);
                     g2.setColor(Color.BLACK);
                     g2.drawRect(bowser.getX() - (bowser.getRadius()), bowser.getY() - (bowser.getRadius() - 2), bowser.getRadius(), 5);
@@ -547,7 +603,7 @@ public class EloictSimGui extends javax.swing.JPanel{
                     g2.fillRect(bowser.getX() - (bowser.getRadius()), bowser.getY() - (bowser.getRadius() - 2), 60 - bowser.getHit() * 3, 5);
                 }
 
-                if (!gameover) {
+                if (!gameover && difficult) {
                     for (int i = 0; i < mushroom.size(); i++) {
                         if (!mushroom.get(i).isDead())
                             g2.drawImage(mushy, mushroom.get(i).getX() - 8, mushroom.get(i).getY() - 8, null);
@@ -556,16 +612,18 @@ public class EloictSimGui extends javax.swing.JPanel{
                         if (!goomba.get(i).isDead())
                             g2.drawImage(goomby, goomba.get(i).getX() - 8, goomba.get(i).getY() - 8, null);
                     }
-                    for (int i = 0; i < vuurballen.size(); i++) {
-                        if (!vuurballen.get(i).isStop())
-                            g2.drawImage(bally, vuurballen.get(i).getX() - 4, vuurballen.get(i).getY() - 4, null);
-                    }
+
                     for (int i = 0; i < fireBreath.size(); i++) {
                         if (!fireBreath.get(i).isCollision()) {
                             g2.drawImage(breath, fireBreath.get(i).getX() - 8, fireBreath.get(i).getY() - 8, null);
                         }
                     }
-                } else {
+                } else if (!gameover){
+                    for (int i = 0; i < vuurballen.size(); i++) {
+                        if (!vuurballen.get(i).isStop())
+                            g2.drawImage(bally, vuurballen.get(i).getX() - 4, vuurballen.get(i).getY() - 4, null);
+                    }
+                } else if (gameover){
                     gameOver();
                 }
             }
@@ -592,109 +650,112 @@ public class EloictSimGui extends javax.swing.JPanel{
 
 
     public void checkThread(){
-        goomba.clear();
-        mushroom.clear();
-        vuurballen.clear();
-        fireBreath.clear();
-        tekenPanel.repaint();
-        bowser = new Bowser(800, 310, 60);
-        for (int i = 0; i < 4; i++){
-            goomba.add(new Goomba((300 + (i * 50)), 305));
-            goomba.get(i).createThread();
+        if (difficult){
+            goomba.clear();
+            mushroom.clear();
+            vuurballen.clear();
+            fireBreath.clear();
+            tekenPanel.repaint();
+            bowser = new Bowser(800, 310, 60);
+            for (int i = 0; i < 5; i++){
+                goomba.add(new Goomba((300 + (i * 50)), 305));
+                goomba.get(i).createThread();
+            }
+
+            for (int i = 0; i < 5; i++){
+                Lokaal lokaal = lokalen.get((int) (Math.random() * lokalen.size()));
+                mushroom.add(new Mushroom((lokaal.getX() + (lokaal.getB() / 2)), (lokaal.getY() + (lokaal.getH() / 2))));
+                mushroom.get(i).createThread();
+            }
+
+            goombaThread = new Thread(() -> {
+                while (true){
+                    boolean last = false;
+                    if(goomba != null && !gameover){
+                        for (int i = 0; i < goomba.size(); i++){
+                            collideGoomba(goomba.get(i));
+                            if (intersection(goomba.get(i).getX(), goomba.get(i).getY(), goomba.get(i).getRadius())){
+                                goomba.get(i).setCollision(true);
+                            }
+                            if (gameover != last)
+                                goomba.get(i).setGameover(gameover);
+                            last = gameover;
+                            if (goomba.get(i).isRepaint()){
+                                tekenPanel.repaint();
+                                goomba.get(i).setRepaint(false);
+                            }
+                        }
+                    }
+                }
+            });
+            goombaThread.start();
+
+
+            mushroomThread  = new Thread(() -> {
+                while (true){
+                    boolean last = false;
+                    if (mushroom != null && !gameover){
+                        for (int i = 0; i < mushroom.size(); i++){
+                            if (collectMushroom(mushroom.get(i))){
+                                mushroom.get(i).setDead(true);
+                            }
+                            mushroom.get(i).setCollideRight(intersection(mushroom.get(i).getX() + 5, mushroom.get(i).getY(), mushroom.get(i).getRadius()));
+                            mushroom.get(i).setCollideLeft(intersection(mushroom.get(i).getX() - 5, mushroom.get(i).getY(), mushroom.get(i).getRadius()));
+                            mushroom.get(i).setCollideDown(intersection(mushroom.get(i).getX(), mushroom.get(i).getY() + 5, mushroom.get(i).getRadius()));
+                            mushroom.get(i).setCollideUp(intersection(mushroom.get(i).getX(), mushroom.get(i).getY() - 5, mushroom.get(i).getRadius()));
+                            if (gameover != last)
+                                mushroom.get(i).setGameover(gameover);
+                            last = gameover;
+                            if (mushroom.get(i).isRepaint()){
+                                tekenPanel.repaint();
+                                mushroom.get(i).setRepaint(false);
+                            }
+                        }
+                    }
+                }
+            });
+            mushroomThread.start();
+
+            bowser.createThread();
+
+            bowserThread = new Thread(() -> {
+                while (true){
+                    if (bowser.intersect(this.x, this.y, this.radius))
+                        collideBowser();
+                    if (bowser.isShiver()){
+                        shiver();
+                        bowser.setShiver(false);
+                    }
+                    int hit = bowser.getHit();
+                    if (hit == 20){
+                        if (!bowser.isDead())
+                            playSound("mario/sound/bowserfalls");
+                        bowser.setDead(true);
+                    }
+                    bowser.setGameover(gameover);
+                    if (bowser.isRepaint()){
+                        if ((int) (Math.random() * 5) == 1){
+                            fireBreath.add(new FireBreath(bowser.getX() + 15, bowser.getY() - 20, 8, true));
+                        }
+                        tekenPanel.repaint();
+                        bowser.setRepaint(false);
+                    }
+                    for (int i = 0; i < fireBreath.size(); i++){
+                        if (fireBreath.get(i) != null){
+                            if (fireBreath.get(i).intersect(x,y,radius)){
+                                collideBowser();
+                            }
+                            fireBreath.get(i).setGameover(gameover);
+                            if (intersection(fireBreath.get(i).getX(), fireBreath.get(i).getY(), fireBreath.get(i).getRadius())){
+                                fireBreath.get(i).setCollision(true);
+                            }
+                        }
+                    }
+                }
+            });
+            bowserThread.start();
         }
 
-        for (int i = 0; i < 5; i++){
-            Lokaal lokaal = lokalen.get((int) (Math.random() * lokalen.size()));
-            mushroom.add(new Mushroom((lokaal.getX() + (lokaal.getB() / 2)), (lokaal.getY() + (lokaal.getH() / 2))));
-            mushroom.get(i).createThread();
-        }
-
-        goombaThread = new Thread(() -> {
-            while (true){
-                boolean last = false;
-                if(goomba != null && !gameover){
-                    for (int i = 0; i < goomba.size(); i++){
-                        collideGoomba(goomba.get(i));
-                        if (intersection(goomba.get(i).getX(), goomba.get(i).getY(), goomba.get(i).getRadius())){
-                            goomba.get(i).setCollision(true);
-                        }
-                        if (gameover != last)
-                            goomba.get(i).setGameover(gameover);
-                        last = gameover;
-                        if (goomba.get(i).isRepaint()){
-                            tekenPanel.repaint();
-                            goomba.get(i).setRepaint(false);
-                        }
-                    }
-                }
-            }
-        });
-        goombaThread.start();
-
-
-        mushroomThread  = new Thread(() -> {
-            while (true){
-                boolean last = false;
-                if (mushroom != null && !gameover){
-                    for (int i = 0; i < mushroom.size(); i++){
-                        if (collectMushroom(mushroom.get(i))){
-                            mushroom.get(i).setDead(true);
-                        }
-                        mushroom.get(i).setCollideRight(intersection(mushroom.get(i).getX() + 5, mushroom.get(i).getY(), mushroom.get(i).getRadius()));
-                        mushroom.get(i).setCollideLeft(intersection(mushroom.get(i).getX() - 5, mushroom.get(i).getY(), mushroom.get(i).getRadius()));
-                        mushroom.get(i).setCollideDown(intersection(mushroom.get(i).getX(), mushroom.get(i).getY() + 5, mushroom.get(i).getRadius()));
-                        mushroom.get(i).setCollideUp(intersection(mushroom.get(i).getX(), mushroom.get(i).getY() - 5, mushroom.get(i).getRadius()));
-                        if (gameover != last)
-                            mushroom.get(i).setGameover(gameover);
-                        last = gameover;
-                        if (mushroom.get(i).isRepaint()){
-                            tekenPanel.repaint();
-                            mushroom.get(i).setRepaint(false);
-                        }
-                    }
-                }
-            }
-        });
-        mushroomThread.start();
-
-        bowser.createThread();
-
-        bowserThread = new Thread(() -> {
-            while (true){
-                if (bowser.intersect(this.x, this.y, this.radius))
-                    collideBowser();
-                if (bowser.isShiver()){
-                    shiver();
-                    bowser.setShiver(false);
-                }
-                int hit = bowser.getHit();
-                if (hit == 20){
-                    if (!bowser.isDead())
-                        playSound("mario/sound/bowserfalls");
-                    bowser.setDead(true);
-                }
-                bowser.setGameover(gameover);
-                if (bowser.isRepaint()){
-                    if ((int) (Math.random() * 5) == 1){
-                        fireBreath.add(new FireBreath(bowser.getX() + 15, bowser.getY() - 20, 8, true));
-                    }
-                    tekenPanel.repaint();
-                    bowser.setRepaint(false);
-                }
-                for (int i = 0; i < fireBreath.size(); i++){
-                    if (fireBreath.get(i) != null){
-                        if (fireBreath.get(i).intersect(x,y,radius)){
-                            collideBowser();
-                        }
-                        fireBreath.get(i).setGameover(gameover);
-                        if (intersection(fireBreath.get(i).getX(), fireBreath.get(i).getY(), fireBreath.get(i).getRadius())){
-                            fireBreath.get(i).setCollision(true);
-                        }
-                    }
-                }
-            }
-        });
-        bowserThread.start();
 
         vuurbalThread = new Thread(() -> {
             vuurballen.add(new Vuurbal()); //Anders gaat hij niet in de forloop, als de Arraylist leeg is
@@ -940,10 +1001,23 @@ public class EloictSimGui extends javax.swing.JPanel{
             }
         }
 
-
-    }
-
-    public void initializeDefaultThreads(){
+        String queryInformatiePunten = "select informatiepunten.x, informatiepunten.y, informatiepunten.beschrijving, lokalen.naam, lokalen.lokaalcode from informatiepunten inner join lokalen on lokalen.id = informatiepunten.lokaal_id;";
+        try{
+            conn = connection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(queryInformatiePunten);
+            while (rs.next()) {
+                informatiePunten.add(new InformatiePunten(rs.getInt("x"), rs.getInt("y"), rs.getString("beschrijving"), rs.getString("naam"), rs.getString("lokaalcode")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
 
     }
