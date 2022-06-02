@@ -1,11 +1,11 @@
-package logica;
+package mario;
 
-public class Mushroom {
-    private int x;
-    private int y;
+import logica.Coordinaten;
+import logica.Meetkunde;
+
+public class Mushroom extends Coordinaten {
     private int startx = 0;
     private int starty = 0;
-    private int radius = 8;
     private boolean collideLeft = false;
     private boolean collideUp = false;
     private boolean goingLeft = false;
@@ -18,33 +18,17 @@ public class Mushroom {
     private Thread thread;
 
     public Mushroom(){
-        this.x = 0;
-        this.y = 0;
+        super(0,0,8);
     }
 
     public Mushroom(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(x,y,8);
     }
 
     public Mushroom(int x, int y, int radius){
-        this.x = x;
-        this.y = y;
+        super(x,y,radius);
         this.startx = x;
         this.starty = y;
-        this.radius = radius;
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius(){
-        return this.radius;
     }
 
     public boolean isGameover() {
@@ -83,18 +67,6 @@ public class Mushroom {
         return goingUp;
     }
 
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
-    }
 
     public void setRepaint(boolean repaint){
         this.repaint = repaint;
@@ -163,17 +135,17 @@ public class Mushroom {
                             setGoingUp(true);
 
                         if (goingLeft && goingUp){
-                            x -= 5;
-                            y -= 5;
+                            setX(getX() - 5);
+                            setY(getY() - 5);
                         } else if (goingLeft) {
-                            x -= 5;
-                            y += 5;
+                            setX(getX() - 5);
+                            setY(getY() + 5);
                         } else if (goingUp){
-                            x += 5;
-                            y -= 5;
+                            setX(getX() + 5);
+                            setY(getY() - 5);
                         } else {
-                            x += 5;
-                            y += 5;
+                            setX(getX() + 5);
+                            setY(getY() + 5);
                         }
 
                         repaint = true;
@@ -194,7 +166,7 @@ public class Mushroom {
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
 
 }

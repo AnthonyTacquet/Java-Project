@@ -1,11 +1,11 @@
-package logica;
+package mario;
 
-public class Bowser {
-    private int x;
-    private int y;
+import logica.Coordinaten;
+import logica.Meetkunde;
+
+public class Bowser extends Coordinaten {
     private int startx = 0;
     private int starty = 0;
-    private int radius = 32;
     private int hit = 0;
 
     private boolean gameover = false;
@@ -16,37 +16,20 @@ public class Bowser {
     private Thread thread;
 
     public Bowser(){
-        this.x = 0;
-        this.y = 0;
+        super(0,0,30);
     }
 
     public Bowser(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(x,y, 32);
         this.startx = x;
         this.starty = y;
     }
 
     public Bowser(int x, int y, int radius){
-        this.x = x;
-        this.y = y;
+        super(x,y,radius);
         this.startx = x;
         this.starty = y;
-        this.radius = radius;
     }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius(){
-        return this.radius;
-    }
-
     public boolean isGameover() {
         return gameover;
     }
@@ -65,18 +48,6 @@ public class Bowser {
 
     public int getHit(){
         return this.hit;
-    }
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
     }
 
     public void setRepaint(boolean repaint){
@@ -120,13 +91,12 @@ public class Bowser {
                     int delay = (int) (Math.random() * 10000 + 1000);
                     for (int i = 0; i < 11; i++){
                         switch (i){
-                            case 0,1,2,3: y-=5; break;
-                            case 4: y-=2; break;
+                            case 0,1,2,3: setY(getY() - 5); break;
+                            case 4: setY(getY() - 2); break;
                             case 5: break;
-                            case 6: y+=2; break;
-                            case 7,8,9,10: y+=5; break;
+                            case 6: setY(getY() + 2); break;
+                            case 7,8,9,10: setY(getY() + 5); break;
                         }
-
                         if (i == 6)
                             shiver = true;
                         repaint = true;
@@ -148,7 +118,7 @@ public class Bowser {
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
 
 }

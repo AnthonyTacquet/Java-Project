@@ -1,10 +1,9 @@
-package logica;
+package mario;
 
-public class Vuurbal {
-    private int x;
-    private int y;
-    private int radius = 8;
+import logica.Coordinaten;
+import logica.Meetkunde;
 
+public class Vuurbal extends Coordinaten {
     private boolean links = false;
     private boolean stop = false;
     private boolean bounce = false;
@@ -18,41 +17,21 @@ public class Vuurbal {
 
     private Thread thread;
 
-    public Vuurbal(){
-        this.x = 0;
-        this.y = 0;
-    }
+    public Vuurbal(){}
 
     public Vuurbal(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(x,y);
     }
 
     public Vuurbal(int x, int y, int radius){
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
+        super(x,y,radius);
     }
 
     public Vuurbal(int x, int y, int radius, boolean links, boolean createthread){
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
+        super(x,y,radius);
         this.links = links;
         if (createthread)
             createThread();
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius(){
-        return this.radius;
     }
 
     public boolean isGameover() {
@@ -85,18 +64,6 @@ public class Vuurbal {
 
     public Thread getThread() {
         return thread;
-    }
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
     }
 
     public void setRepaint(boolean repaint){
@@ -140,6 +107,8 @@ public class Vuurbal {
             for (int i = 0; i < 10; i++){
                 bounce = false;
                 while (!gameover && !stop && !bounce) {
+                    int x = getX();
+                    int y = getY();
                     if (links && down) {
                         x -= 5;
                         y += 5;
@@ -165,6 +134,8 @@ public class Vuurbal {
                         }
                         height++;
                     }
+                    setX(x);
+                    setY(y);
 
                     if (height == 3){
                         down = true;
@@ -197,12 +168,12 @@ public class Vuurbal {
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
 
     @Override
     public String toString(){
-        return "X: " + this.x + ", Y: " + this.y + ", Stop? " + this.stop;
+        return "X: " + getX() + ", Y: " + getY() + ", Stop? " + this.stop;
     }
 
 }

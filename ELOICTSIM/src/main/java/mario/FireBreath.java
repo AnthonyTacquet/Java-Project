@@ -1,11 +1,9 @@
-package logica;
+package mario;
 
-public class FireBreath {
-    private int x;
-    private int y;
-    private int startx = 0;
-    private int starty = 0;
-    private int radius = 8;
+import logica.Coordinaten;
+import logica.Meetkunde;
+
+public class FireBreath extends Coordinaten {
     private Thread thread;
 
     boolean gameover = false;
@@ -14,37 +12,17 @@ public class FireBreath {
     boolean collision = false;
 
     public FireBreath(){
-        this.x = 0;
-        this.y = 0;
+        super(0,0,8);
     }
 
     public FireBreath(int x, int y){
-        this.x = x;
-        this.y = y;
-        this.startx = x;
-        this.starty = y;
+        super(x,y,8);
     }
 
     public FireBreath(int x, int y, int radius, boolean bool){
-        this.x = x;
-        this.y = y;
-        this.startx = x;
-        this.starty = y;
-        this.radius = radius;
+        super(x,y,radius);
         if (bool)
             createThread();
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius(){
-        return this.radius;
     }
 
     public boolean isGameover() {
@@ -65,18 +43,6 @@ public class FireBreath {
 
     public Thread getThread(){
         return thread;
-    }
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
     }
 
     public void setRepaint(boolean repaint){
@@ -118,6 +84,6 @@ public class FireBreath {
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
 }

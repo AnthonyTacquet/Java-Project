@@ -2,67 +2,23 @@ package logica;
 
 import java.util.ArrayList;
 
-public class Docent {
-    private int x;
-    private int y;
-    private int radius;
-    private String naam = "";
-    private String voornaam = "";
-    private String beschrijving = "";
+public class Docent extends Eigenschappen{
     private ArrayList<String> vakken = new ArrayList<>();
 
     public Docent(){
-        this.x = 0;
-        this.y = 0;
-        this.radius = 30;
-        this.naam = "";
-        this.beschrijving = "";
+        super(0,0,30);
     }
 
     public Docent(int x, int y, int radius, String naam){
-        this.naam = naam;
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.beschrijving = "";
+        super(x,y,radius,naam);
     }
 
     public Docent(int x, int y, String naam, String beschrijving){
-        this.naam = naam;
-        this.x = x;
-        this.y = y;
-        this.beschrijving = beschrijving;
+        super(x,y, 30,naam,beschrijving);
     }
 
     public Docent(int x, int y, String naam, String voornaam, String beschrijving){
-        this.naam = naam;
-        this.voornaam = voornaam;
-        this.x = x;
-        this.y = y;
-        this.beschrijving = beschrijving;
-    }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public String getNaam(){
-        return this.naam;
-    }
-
-    public String getVoornaam() {
-        return voornaam;
-    }
-    public String getBeschrijving() {
-        return beschrijving;
+        super(x, y, 30, naam, voornaam, beschrijving);
     }
     public ArrayList<String> getVakken() {
         return this.vakken;
@@ -82,35 +38,11 @@ public class Docent {
         }
         return string.toString();
     }
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
-    }
-
-    public void setNaam(String naam){
-        this.naam = naam;
-    }
-
-    public void setVoornaam(String voornaam) {
-        this.voornaam = voornaam;
-    }
-    public void setBeschrijving(String beschrijving) {
-        this.beschrijving = beschrijving;
-    }
-
     public void setVakken(ArrayList<String> vakken) {
         this.vakken = vakken;
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
 }

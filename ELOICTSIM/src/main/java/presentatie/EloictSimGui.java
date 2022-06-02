@@ -1,6 +1,7 @@
 package presentatie;
 
 import logica.*;
+import mario.*;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -106,11 +107,6 @@ public class EloictSimGui extends javax.swing.JPanel{
     int backgroundy = 0;
 
     public EloictSimGui() {
-        /*DefaultListModel<String> lijst = new DefaultListModel<>();
-        lijst.addElement("Easy");
-        lijst.addElement("Hard");
-        keuzeLijst = new JList<>(lijst);*/
-
         restartButton.setOpaque(false);
         restartButton.setContentAreaFilled(false);
         restartButton.setBorder(new MatteBorder(1,1,1,1, Color.WHITE));
@@ -367,35 +363,6 @@ public class EloictSimGui extends javax.swing.JPanel{
         }
 
     }
-
-    /*public void lokalenPanel(){
-        boolean found = false;
-        for (int i = 0; i < lokalen.size(); i++){
-            if (Meetkunde.studentInLokaal(lokalen.get(i), this.x, this.y, this.radius)){
-                numberlokaal = i;
-                found = true;
-            }
-        }
-        if (!found){
-            numberlokaal = -10;
-            lastlokaal = -100;
-        }
-
-        if (numberlokaal != -10){
-            if (lastlokaal == numberlokaal)
-                return;
-            else
-                lastlokaal = numberlokaal;
-
-            lokaalNaam.setText(lokalen.get(numberlokaal).getNaam());
-            lokaalCode.setText(lokalen.get(numberlokaal).getCode());
-        }
-
-        if (numberlokaal == -10){
-            lokaalNaam.setText("");
-            lokaalCode.setText("");
-        }
-    }*/
 
     public void informatiePanel(){
         boolean found = false;

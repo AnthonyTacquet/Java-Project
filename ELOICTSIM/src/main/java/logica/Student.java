@@ -2,14 +2,7 @@ package logica;
 
 import java.util.ArrayList;
 
-public class Student {
-    private int x;
-    private int y;
-    private int radius;
-    private String naam = "";
-    private String voornaam = "";
-    private String beschrijving = "";
-    private String beroepsprofiel = "";
+public class Student extends Eigenschappen{
     private ArrayList<String> keuzevakken = new ArrayList<>();
     private ArrayList<String> verplichtevakken = new ArrayList<>();
 
@@ -18,47 +11,23 @@ public class Student {
     private boolean repaint = false;
 
     public Student(){
-        this.x = 0;
-        this.y = 0;
-        this.radius = 30;
-        this.naam = "";
-        this.beschrijving = "";
+        super(0,0,30);
     }
 
     public Student(int x, int y, int radius, String naam){
-        this.naam = naam;
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.beschrijving = "";
+        super(x,y,radius,naam);
     }
 
     public Student(int x, int y, String naam, String beschrijving){
-        this.naam = naam;
-        this.x = x;
-        this.y = y;
-        this.radius = 30;
-        this.beschrijving = beschrijving;
+        super(x,y,naam, beschrijving);
     }
 
     public Student(int x, int y, String naam, String voornaam, String beschrijving, String beroepsprofiel){
-        this.naam = naam;
-        this.x = x;
-        this.y = y;
-        this.radius = 30;
-        this.voornaam = voornaam;
-        this.beschrijving = beschrijving;
-        this.beroepsprofiel = beroepsprofiel;
+        super(x,y, naam, voornaam, beschrijving, beroepsprofiel);
     }
 
     public Student(Student student){
-        this.naam = student.getNaam();
-        this.x = student.getX();
-        this.y = student.getY();
-        this.radius = student.getRadius();
-        this.voornaam = student.getVoornaam();
-        this.beschrijving = student.getBeschrijving();
-        this.beroepsprofiel = student.getBeroepsprofiel();
+        super();
         this.keuzevakken = student.getKeuzevakken();
         this.verplichtevakken = student.getVerplichtevakken();
     }
@@ -95,34 +64,6 @@ public class Student {
         return string.toString();
     }
 
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public int getRadius() {
-        return radius;
-    }
-
-    public String getNaam(){
-        return this.naam;
-    }
-
-    public String getBeschrijving(){
-        return this.beschrijving;
-    }
-
-    public String getVoornaam() {
-        return voornaam;
-    }
-
-    public String getBeroepsprofiel() {
-        return beroepsprofiel;
-    }
-
     public ArrayList<String> getKeuzevakken() {
         return keuzevakken;
     }
@@ -141,34 +82,6 @@ public class Student {
 
     public boolean isGameover() {
         return gameover;
-    }
-
-    public void setX(int x){
-        this.x = x;
-    }
-
-    public void setY(int y){
-        this.y = y;
-    }
-
-    public void setRadius(int radius){
-        this.radius = radius;
-    }
-
-    public void setNaam(String naam){
-        this.naam = naam;
-    }
-
-    public void setBeschrijving(String beschrijving){
-        this.beschrijving = beschrijving;
-    }
-
-    public void setVoornaam(String voornaam) {
-        this.voornaam = voornaam;
-    }
-
-    public void setBeroepsprofiel(String beroepsprofiel) {
-        this.beroepsprofiel = beroepsprofiel;
     }
 
     public void setKeuzevakken(ArrayList<String> keuzevakken) {
@@ -192,7 +105,7 @@ public class Student {
     }
 
     public boolean intersect(int xc, int yc, int cirkelRadius){
-        return Meetkunde.cirkelOverlaptMetCirkel(this.x, this.y, xc, yc, this.radius, cirkelRadius);
+        return Meetkunde.cirkelOverlaptMetCirkel(getX(), getY(), xc, yc, getRadius(), cirkelRadius);
     }
     public void createThread(){
         Thread thread = new Thread(() -> {
@@ -207,13 +120,12 @@ public class Student {
                     if (skip)
                         distance = 10;
                     switch (direction){
-                        case 0: x -= distance; break;
-                        case 1: y -= distance; break;
-                        case 2: x += distance; break;
-                        case 3: y += distance; break;
+                        case 0: setX(getX() - distance); break;
+                        case 1: setY(getY() - distance); break;
+                        case 2: setX(getX() + distance); break;
+                        case 3: setY(getY() + distance); break;
                     }
                     skip = false;
-
                     if (!collision) {
                         if (!gameover) {
                             repaint = true;
