@@ -585,12 +585,13 @@ public class EloictSimGui extends javax.swing.JPanel{
                             g2.drawImage(breath, fireBreath.get(i).getX() - 8, fireBreath.get(i).getY() - 8, null);
                         }
                     }
-                } else if (!gameover){
+                }
+                if (!gameover){
                     for (int i = 0; i < vuurballen.size(); i++) {
                         if (!vuurballen.get(i).isStop())
                             g2.drawImage(bally, vuurballen.get(i).getX() - 4, vuurballen.get(i).getY() - 4, null);
                     }
-                } else if (gameover){
+                } else {
                     gameOver();
                 }
             }
