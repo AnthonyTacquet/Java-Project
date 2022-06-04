@@ -1,10 +1,13 @@
 package logica;
 
+import com.mysql.cj.exceptions.StreamingNotifiable;
+
 import java.util.ArrayList;
 
 public class Student extends Eigenschappen{
     private ArrayList<String> keuzevakken = new ArrayList<>();
     private ArrayList<String> verplichtevakken = new ArrayList<>();
+    private int inschrijvingsjaar;
 
     private boolean collision = false;
     private boolean gameover = false;
@@ -22,7 +25,12 @@ public class Student extends Eigenschappen{
         super(x,y,naam, beschrijving);
     }
 
-    public Student(int x, int y, String naam, String voornaam, String beschrijving, String beroepsprofiel){
+    public Student(String naam, String voornaam, String beschrijving, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar){
+        super(naam, voornaam, beschrijving, beroepsprofiel);
+        this.inschrijvingsjaar = inschrijvingsjaar;
+    }
+
+    public Student(int x, int y, String naam, String voornaam, String beschrijving, Beroepsprofiel beroepsprofiel){
         super(x,y, naam, voornaam, beschrijving, beroepsprofiel);
     }
 
@@ -31,8 +39,6 @@ public class Student extends Eigenschappen{
         this.keuzevakken = student.getKeuzevakken();
         this.verplichtevakken = student.getVerplichtevakken();
     }
-
-
 
     public String getKeuzevakkenString() {
         int count = 0;
@@ -72,6 +78,10 @@ public class Student extends Eigenschappen{
         return verplichtevakken;
     }
 
+    public int getInschrijvingsjaar(){
+        return this.inschrijvingsjaar;
+    }
+
     public boolean isRepaint() {
         return repaint;
     }
@@ -90,6 +100,10 @@ public class Student extends Eigenschappen{
 
     public void setVerplichtevakken(ArrayList<String> verplichtevakken) {
         this.verplichtevakken = verplichtevakken;
+    }
+
+    public void setInschrijvingsjaar(int inschrijvingsjaar){
+        this.inschrijvingsjaar = inschrijvingsjaar;
     }
 
     public void setRepaint(boolean repaint) {

@@ -4,7 +4,7 @@ public class Eigenschappen extends Coordinaten{
     private String naam = "";
     private String voornaam = "";
     private String beschrijving = "";
-    private String beroepsprofiel = "";
+    private Beroepsprofiel beroepsprofiel;
 
     public Eigenschappen(){}
 
@@ -47,14 +47,14 @@ public class Eigenschappen extends Coordinaten{
         this.beschrijving = beschrijving;
     }
 
-    public Eigenschappen(String naam, String voornaam, String beschrijving, String beroepsprofiel){
+    public Eigenschappen(String naam, String voornaam, String beschrijving, Beroepsprofiel beroepsprofiel){
         this.naam = naam;
         this.voornaam = voornaam;
         this.beschrijving = beschrijving;
         this.beroepsprofiel = beroepsprofiel;
     }
 
-    public Eigenschappen(int x, int y, String naam, String voornaam, String beschrijving, String beroepsprofiel){
+    public Eigenschappen(int x, int y, String naam, String voornaam, String beschrijving, Beroepsprofiel beroepsprofiel){
         super(x,y);
         this.naam = naam;
         this.voornaam = voornaam;
@@ -97,7 +97,7 @@ public class Eigenschappen extends Coordinaten{
         return this.beschrijving;
     }
 
-    public String getBeroepsprofiel(){
+    public Beroepsprofiel getBeroepsprofiel(){
         return this.beroepsprofiel;
     }
 
@@ -113,7 +113,7 @@ public class Eigenschappen extends Coordinaten{
         this.beschrijving = beschrijving;
     }
 
-    public void setBeroepsprofiel(String beroepsprofiel){
+    public void setBeroepsprofiel(Beroepsprofiel beroepsprofiel){
         this.beroepsprofiel = beroepsprofiel;
     }
 }

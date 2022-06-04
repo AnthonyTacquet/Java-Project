@@ -26,8 +26,8 @@ public class EloictSimGui extends javax.swing.JPanel{
     private static final Color DEUR_KLEUR =new Color(211,221,242);//Mistblauw
     private static final Color INVISIBLE =new Color(0,0,0, 1);//TRANSPARENT
 
-    String username = "root";
-    String password = "Azerty123";
+    String username = "eloict";
+    String password = "Azerty123!";
     private String dbms = "mysql";
     private String serverName = "localhost";
     private String portNumber = "3306";
@@ -350,7 +350,7 @@ public class EloictSimGui extends javax.swing.JPanel{
             this.vakkenStudent.setText("<html>" + studenten.get(numberstudent).getVerplichtevakkenString() + "</html>");
             this.vakkenKeuzeStudent.setText("<html>" + studenten.get(numberstudent).getKeuzevakkenString() + "</html>");
             this.beschrijvingStudent.setText(studenten.get(numberstudent).getBeschrijving());
-            this.beroepsprofiel.setText(studenten.get(numberstudent).getBeroepsprofiel());
+            this.beroepsprofiel.setText(studenten.get(numberstudent).getBeroepsprofiel().toString());
         }
 
         if (numberstudent == -10){
@@ -899,7 +899,16 @@ public class EloictSimGui extends javax.swing.JPanel{
                 student.setBeschrijving(rs.getString("beschrijving"));
                 student.setNaam(rs.getString("familienaam"));
                 student.setVoornaam(rs.getString("voornaam"));
-                student.setBeroepsprofiel(rs.getString("naam"));
+
+                /*Beroepsprofiel beroepsprofiel = Beroepsprofiel.NULL;
+                switch (rs.getString("naam")){
+                    case "TELECOMMUNICATIONS_ENGINEER": beroepsprofiel = Beroepsprofiel.TELECOMMUNICATIONS_ENGINEER; break;
+                    case "INTERNET_OF_THINGS_DEVELOPER": beroepsprofiel = Beroepsprofiel.INTERNET_OF_THINGS_DEVELOPER; break;
+                    case "NETWORK_SECURITY_ENGINEER": beroepsprofiel = Beroepsprofiel.NETWORK_SECURITY_ENGINEER; break;
+                    case "SOFTWARE_AI_DEVELOPER": beroepsprofiel = Beroepsprofiel.SOFTWARE_AI_DEVELOPER; break;
+                    case "WEB_MOBILE_DEVELOPER": beroepsprofiel = Beroepsprofiel.WEB_MOBILE_DEVELOPER; break;
+                }*/
+                student.setBeroepsprofiel(Beroepsprofiel.valueOf(rs.getString("naam")));
                 studenten.add(student);
             }
             for (int i = 0; i < studenten.size(); i++){
