@@ -26,8 +26,8 @@ public class EloictSimGui extends javax.swing.JPanel{
     private static final Color DEUR_KLEUR =new Color(211,221,242);//Mistblauw
     private static final Color INVISIBLE =new Color(0,0,0, 1);//TRANSPARENT
 
-    String username = "eloict";
-    String password = "Azerty123!";
+    private String username = "eloict";
+    private String password = "Azerty123!";
     private String dbms = "mysql";
     private String serverName = "localhost";
     private String portNumber = "3306";
@@ -71,40 +71,38 @@ public class EloictSimGui extends javax.swing.JPanel{
     private Image marioCurrent;
     private Image titleScreen;
 
-    Thread studentenThread, mushroomThread, goombaThread, bowserThread, vuurbalThread;
+    private Thread studentenThread, mushroomThread, goombaThread, bowserThread, vuurbalThread;
+    private Bowser bowser = new Bowser(5000, 0, 60);
 
-    Bowser bowser = new Bowser(5000, 0, 60);
+    private ArrayList<Lokaal> lokalen = new ArrayList<>();
+    private ArrayList<Deur> deuren = new ArrayList<>();
+    private ArrayList<Student> studenten = new ArrayList<>();
+    private ArrayList<Docent> docenten = new ArrayList<>();
+    private ArrayList<InformatiePunten> informatiePunten = new ArrayList<>();
 
-    ArrayList<Lokaal> lokalen = new ArrayList<>();
-    ArrayList<Deur> deuren = new ArrayList<>();
-    ArrayList<Student> studenten = new ArrayList<>();
-    ArrayList<Docent> docenten = new ArrayList<>();
-    ArrayList<InformatiePunten> informatiePunten = new ArrayList<>();
+    private ArrayList<Goomba> goomba = new ArrayList<>();
+    private ArrayList<Mushroom> mushroom = new ArrayList<>();
+    private ArrayList<FireBreath> fireBreath = new ArrayList<>();
+    private ArrayList<Vuurbal> vuurballen = new ArrayList<>();
 
-    ArrayList<Goomba> goomba = new ArrayList<>();
-    ArrayList<Mushroom> mushroom = new ArrayList<>();
-    ArrayList<FireBreath> fireBreath = new ArrayList<>();
-    ArrayList<Vuurbal> vuurballen = new ArrayList<>();
-    //final String queryDocenten = "select personen.familienaam, personen.voornaam, vakken.naam from personen inner join docenten on docenten.id = personen.id inner join docenten_has_vakken on docenten_has_vakken.docent_id = docenten.id inner join vakken on vakken.id = docenten_has_vakken.vak_id ";
-    //final String queryStudenten = "select personen.familienaam, personen.voornaam , beroepsprofielen.naam, vakken.naam as verplicht from personen inner join studenten on studenten.id = personen.id inner join beroepsprofielen on beroepsprofielen.id = beroepsprofiel_id left join keuzevakken on studenten.id = keuzevakken.student_id left join verplichte_vakken on verplichte_vakken.beroepsprofiel_id = beroepsprofielen.id left join vakken on vakken.id = verplichte_vakken.vak_id ";
     private int x;
     private int y;
     private int radius = 16;
 
-    int lastdocent = -100;
-    int numberdocent = -10;
-    int laststudent = -100;
-    int numberstudent = -10;
-    int lastlokaal = -100;
-    int numberlokaal = -10;
-    int mario = 0;
-    boolean size = false;
-    boolean links = false;
-    boolean gameover = false;
-    boolean again = true;
-    boolean difficult = true;
-    int backgroundx = 0;
-    int backgroundy = 0;
+    private int lastdocent = -100;
+    private int numberdocent = -10;
+    private int laststudent = -100;
+    private int numberstudent = -10;
+    private int lastlokaal = -100;
+    private int numberlokaal = -10;
+    private int mario = 0;
+    private boolean size = false;
+    private boolean links = false;
+    private boolean gameover = false;
+    private boolean again = true;
+    private boolean difficult = true;
+    private int backgroundx = 0;
+    private int backgroundy = 0;
 
     public EloictSimGui() {
         restartButton.setOpaque(false);

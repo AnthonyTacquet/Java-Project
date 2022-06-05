@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Database {
 
-    public static void addStudent(Connection connection, String naam, String voornaam, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar, String infopunt) throws Exception {
+    public static void addStudent(Connection connection, String naam, String voornaam, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar, String infopunt) throws SQLException {
         if (naam == null || naam.equals(""))
             throw new IllegalArgumentException("Naam kan niet leeg zijn");
         if (voornaam == null || voornaam.equals(""))
@@ -18,120 +18,160 @@ public class Database {
 
         Integer idPersoon = null;
         Integer idBeroep = null;
-        String insertInfopunt = "";
 
-        // Insert in table
-        PreparedStatement stmt1 = connection.prepareStatement("insert into personen (familienaam, voornaam) values (?, ?);");
-        stmt1.setString(1, naam);
-        stmt1.setString(2, voornaam);
-        stmt1.executeUpdate();
+        try {
+            // Start a transaction
+            connection.setAutoCommit(false);
 
-        // Get ID personen table
-        PreparedStatement stmt2 = connection.prepareStatement("select id from personen where familienaam = ?;");
-        stmt2.setString(1, naam);
-        ResultSet rs2 = stmt2.executeQuery();
-        if (rs2.next()){
-            idPersoon = (Integer) rs2.getInt("id");
+            // Get ID personen table
+            PreparedStatement stmt2 = connection.prepareStatement("select (min(id) + 1) as minID from personen table1 where not exists (select id from personen table2 where table1.id + 1 = table2.id);");
+            ResultSet rs2 = stmt2.executeQuery();
+            if (rs2.next()){
+                idPersoon = (Integer) rs2.getInt("minID");
+            }
+            System.out.println(idPersoon);
+
+            if (idPersoon == null)
+                throw new Exception("Student toevoegen is mislukt!");
+
+            // Insert in table
+            PreparedStatement stmt1 = connection.prepareStatement("insert into personen (id, familienaam, voornaam) values (?, ?, ?);");
+            stmt1.setInt(1, idPersoon);
+            stmt1.setString(2, naam);
+            stmt1.setString(3, voornaam);
+            stmt1.executeUpdate();
+
+            // Start new transaction
+            connection.commit();
+
+            // Get ID Beroepsprofiel table
+            PreparedStatement stmt3 = connection.prepareStatement("select id from beroepsprofielen where naam = ?;");
+            stmt3.setString(1, beroepsprofiel.toString().toUpperCase());
+            ResultSet rs3 = stmt3.executeQuery();
+            if (rs3.next()){
+                idBeroep = (Integer) rs3.getInt("id");
+            }
+            System.out.println(idBeroep);
+
+            // Insert in studenten table
+            PreparedStatement stmt4 = connection.prepareStatement("insert into studenten (id, beroepsprofiel_id, inschrijvingsjaar) values (?, ?, ?);");
+            stmt4.setInt(1, idPersoon);
+            stmt4.setInt(2, idBeroep);
+            stmt4.setInt(3, inschrijvingsjaar);
+            stmt4.executeUpdate();
+
+            // Insert in Informatiepunten table
+            if (infopunt.equals("")){
+                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, null);");
+                stmt5.setInt(1, idPersoon);
+                stmt5.executeUpdate();
+
+            }
+            else{
+                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, ?);");
+                stmt5.setInt(1, idPersoon);
+                stmt5.setString(2, infopunt);
+                stmt5.executeUpdate();
+            }
+
+            // Commit changes
+            connection.commit();
+
+        } catch (Exception e){
+            connection.rollback();
+            throw new SQLException("Runtime error: " + e.getMessage());
+        } finally {
+            connection.close();
         }
 
-        if (idPersoon == null)
-            throw new Exception("Student toevoegen is mislukt!");
 
-        // Get ID Beroepsprofiel table
-        PreparedStatement stmt3 = connection.prepareStatement("select id from beroepsprofielen where naam = ?;");
-        stmt3.setString(1, beroepsprofiel.toString().toUpperCase());
-        ResultSet rs3 = stmt3.executeQuery();
-        if (rs3.next()){
-            idBeroep = (Integer) rs3.getInt("id");
-        }
 
-        // Insert in studenten table
-        PreparedStatement stmt4 = connection.prepareStatement("insert into studenten (id, beroepsprofiel_id, inschrijvingsjaar) values (?, ?, ?);");
-        stmt4.setInt(1, idPersoon);
-        stmt4.setInt(2, idBeroep);
-        stmt4.setInt(3, inschrijvingsjaar);
-        stmt4.executeUpdate();
-
-        // Insert in Informatiepunten table
-        if (infopunt.equals("")){
-            PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, null);");
-            stmt5.setInt(1, idPersoon);
-            stmt5.executeUpdate(insertInfopunt);
-
-        }
-        else{
-            PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, ?);");
-            stmt5.setInt(1, idPersoon);
-            stmt5.setString(2, infopunt);
-            stmt5.executeUpdate(insertInfopunt);
-        }
-
-        connection.close();
     }
 
     public static void updateStudent(Connection connection, int id, String naam, String voornaam, Beroepsprofiel beroepsprofiel, Integer inschrijvingsjaar, String infopunt) throws Exception {
+        try {
+            //Start transaction
+            connection.setAutoCommit(false);
 
-        // Update Personen
-        if (naam != null){
-            PreparedStatement stmt = connection.prepareStatement("update personen set familienaam = ? where id = ?;");
-            stmt.setString(1, naam);
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
+            // Update Personen
+            if (naam != null){
+                PreparedStatement stmt = connection.prepareStatement("update personen set familienaam = ? where id = ?;");
+                stmt.setString(1, naam);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            if (voornaam != null){
+                PreparedStatement stmt = connection.prepareStatement("update personen set voornaam = ? where id = ?;");
+                stmt.setString(1, voornaam);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            // Update Studenten
+            if (beroepsprofiel != Beroepsprofiel.NULL){
+                PreparedStatement stmt = connection.prepareStatement("update studenten set studenten.beroepsprofiel_id = (select beroepsprofielen.id from beroepsprofielen where beroepsprofielen.naam = ?) where studenten.id = ?;");
+                stmt.setString(1, beroepsprofiel.toString().toUpperCase());
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            if (inschrijvingsjaar != null){
+                PreparedStatement stmt = connection.prepareStatement("update studenten set studenten.inschrijvingsjaar = ? where id = ?;");
+                stmt.setInt(1, inschrijvingsjaar);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            // Update informatiepunten
+            if (infopunt != null){
+                PreparedStatement stmt = connection.prepareStatement("update informatiepunten set informatiepunten.beschrijving = ? where informatiepunten.persoon_id = ?;");
+                stmt.setString(1, infopunt);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            // Commit changes
+            connection.commit();
+
+        } catch (Exception exception){
+            connection.rollback();
+        } finally {
+            connection.close();
         }
-
-        if (voornaam != null){
-            PreparedStatement stmt = connection.prepareStatement("update personen set voornaam = ? where id = ?;");
-            stmt.setString(1, voornaam);
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
-        }
-
-        // Update Studenten
-        if (beroepsprofiel != Beroepsprofiel.NULL){
-            PreparedStatement stmt = connection.prepareStatement("update studenten set studenten.beroepsprofiel_id = (select beroepsprofielen.id from beroepsprofielen where beroepsprofielen.naam = ?) where studenten.id = ?;");
-            stmt.setString(1, beroepsprofiel.toString().toUpperCase());
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
-        }
-
-        if (inschrijvingsjaar != null){
-            PreparedStatement stmt = connection.prepareStatement("update studenten set studenten.inschrijvingsjaar = ? where id = ?;");
-            stmt.setInt(1, inschrijvingsjaar);
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
-        }
-
-        // Update informatiepunten
-        if (infopunt != null){
-            PreparedStatement stmt = connection.prepareStatement("update informatiepunten set informatiepunten.beschrijving = ? where informatiepunten.persoon_id = ?;");
-            stmt.setString(1, infopunt);
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
-        }
-
-        connection.close();
     }
 
 
 
     public static void removeStudent(Connection connection, int id) throws SQLException {
 
-        // Delete student
-        PreparedStatement stmt1 = connection.prepareStatement("delete from studenten where id = ?;");
-        stmt1.setInt(1, id);
-        stmt1.executeUpdate();
+        try {
+            // Start transaction
+            connection.setAutoCommit(false);
 
-        // Delete informatiepunt
-        PreparedStatement stmt2 = connection.prepareStatement("delete from informatiepunten where persoon_id = ?;");
-        stmt2.setInt(1, id);
-        stmt2.executeUpdate();
+            // Delete student
+            PreparedStatement stmt1 = connection.prepareStatement("delete from studenten where id = ?;");
+            stmt1.setInt(1, id);
+            stmt1.executeUpdate();
 
-        // Delete persoon
-        PreparedStatement stmt3 = connection.prepareStatement("delete from personen where id = ?;");
-        stmt3.setInt(1, id);
-        stmt3.executeUpdate();
+            // Delete informatiepunt
+            PreparedStatement stmt2 = connection.prepareStatement("delete from informatiepunten where persoon_id = ?;");
+            stmt2.setInt(1, id);
+            stmt2.executeUpdate();
 
-        connection.close();
+            // Delete persoon
+            PreparedStatement stmt3 = connection.prepareStatement("delete from personen where id = ?;");
+            stmt3.setInt(1, id);
+            stmt3.executeUpdate();
+
+            // Commit changes
+            connection.commit();
+        } catch (Exception exception){
+            connection.rollback();
+            System.out.println(exception);
+        } finally {
+            connection.close();
+        }
     }
 
     public static String[] getStudentenByName(Connection connection) throws SQLException {
