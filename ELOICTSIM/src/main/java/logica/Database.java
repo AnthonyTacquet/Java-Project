@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Database {
 
-    public static void addStudent(Connection connection, String naam, String voornaam, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar, String infopunt) throws SQLException {
+    public static void addStudent(Connection connection, String naam, String voornaam, Integer x, Integer y, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar, String infopunt) throws SQLException {
         if (naam == null || naam.equals(""))
             throw new IllegalArgumentException("Naam kan niet leeg zijn");
         if (voornaam == null || voornaam.equals(""))
@@ -15,6 +15,10 @@ public class Database {
             throw new IllegalArgumentException("Inschrijvingsjaar is incorrect");
         if (beroepsprofiel == Beroepsprofiel.NULL)
             throw new IllegalArgumentException("Student moet beroepsprofiel hebben");
+        if (x == null)
+            x = 0;
+        if (y == null)
+            y = 0;
 
         Integer idPersoon = null;
         Integer idBeroep = null;
@@ -62,15 +66,19 @@ public class Database {
 
             // Insert in Informatiepunten table
             if (infopunt.equals("")){
-                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, null);");
-                stmt5.setInt(1, idPersoon);
+                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (?, ?, ?, null);");
+                stmt5.setInt(1, x);
+                stmt5.setInt(2, y);
+                stmt5.setInt(3, idPersoon);
                 stmt5.executeUpdate();
 
             }
             else{
-                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (0, 0, ?, ?);");
-                stmt5.setInt(1, idPersoon);
-                stmt5.setString(2, infopunt);
+                PreparedStatement stmt5 = connection.prepareStatement("insert into informatiepunten (x, y, persoon_id, beschrijving) values (?, ?, ?, ?);");
+                stmt5.setInt(1, x);
+                stmt5.setInt(2, y);
+                stmt5.setInt(3, idPersoon);
+                stmt5.setString(4, infopunt);
                 stmt5.executeUpdate();
             }
 
@@ -88,7 +96,7 @@ public class Database {
 
     }
 
-    public static void updateStudent(Connection connection, int id, String naam, String voornaam, Beroepsprofiel beroepsprofiel, Integer inschrijvingsjaar, String infopunt) throws Exception {
+    public static void updateStudent(Connection connection, int id, String naam, String voornaam, Integer x, Integer y, Beroepsprofiel beroepsprofiel, Integer inschrijvingsjaar, String infopunt) throws Exception {
         try {
             //Start transaction
             connection.setAutoCommit(false);
@@ -127,6 +135,21 @@ public class Database {
             if (infopunt != null){
                 PreparedStatement stmt = connection.prepareStatement("update informatiepunten set informatiepunten.beschrijving = ? where informatiepunten.persoon_id = ?;");
                 stmt.setString(1, infopunt);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            // Update informatiepunten
+            if (x != null){
+                PreparedStatement stmt = connection.prepareStatement("update informatiepunten set informatiepunten.x = ? where informatiepunten.persoon_id = ?;");
+                stmt.setInt(1, x);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+            }
+
+            if (y != null){
+                PreparedStatement stmt = connection.prepareStatement("update informatiepunten set informatiepunten.y = ? where informatiepunten.persoon_id = ?;");
+                stmt.setInt(1, y);
                 stmt.setInt(2, id);
                 stmt.executeUpdate();
             }
@@ -210,7 +233,7 @@ public class Database {
         stmt.setInt(1, id);
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()){
-            student = new Student(resultSet.getString("familienaam"), resultSet.getString("voornaam"), resultSet.getString("beschrijving"), Beroepsprofiel.valueOf(resultSet.getString("naam")), Integer.parseInt(resultSet.getString("inschrijvingsjaar")));
+            student = new Student(resultSet.getInt("x"), resultSet.getInt("y") , resultSet.getString("familienaam"), resultSet.getString("voornaam"), resultSet.getString("beschrijving"), Beroepsprofiel.valueOf(resultSet.getString("naam")), Integer.parseInt(resultSet.getString("inschrijvingsjaar")));
         }
 
         connection.close();
@@ -227,6 +250,8 @@ public class Database {
             stringlist.add(resultSet.getString("voornaam"));
             stringlist.add(resultSet.getString("familienaam"));
             stringlist.add(resultSet.getString("inschrijvingsjaar"));
+            stringlist.add(resultSet.getString("x"));
+            stringlist.add(resultSet.getString("y"));
             stringlist.add(resultSet.getString("naam"));
             stringlist.add(resultSet.getString("beschrijving"));
             list.add(stringlist);

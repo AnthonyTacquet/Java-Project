@@ -34,6 +34,11 @@ public class Student extends Eigenschappen{
         super(x,y, naam, voornaam, beschrijving, beroepsprofiel);
     }
 
+    public Student(int x, int y, String naam, String voornaam, String beschrijving, Beroepsprofiel beroepsprofiel, int inschrijvingsjaar){
+        super(x,y, naam, voornaam, beschrijving, beroepsprofiel);
+        this.inschrijvingsjaar = inschrijvingsjaar;
+    }
+
     public Student(Student student){
         super();
         this.keuzevakken = student.getKeuzevakken();

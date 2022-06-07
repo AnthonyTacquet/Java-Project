@@ -26,8 +26,8 @@ public class EloictSimGui extends javax.swing.JPanel{
     private static final Color DEUR_KLEUR =new Color(211,221,242);//Mistblauw
     private static final Color INVISIBLE =new Color(0,0,0, 1);//TRANSPARENT
 
-    private String username = "eloict";
-    private String password = "Azerty123!";
+    private String username = "root";
+    private String password = "Azerty123";
     private String dbms = "mysql";
     private String serverName = "localhost";
     private String portNumber = "3306";

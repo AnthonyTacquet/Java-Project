@@ -6,13 +6,9 @@ import logica.Student;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -47,6 +43,10 @@ public class DataEditor extends javax.swing.JPanel{
     private JButton searchButton;
     private JTextArea beschrijvingArea;
     private JScrollPane scrollPane;
+    private JTextField xBewField;
+    private JTextField yBewField;
+    private JTextField xToeField;
+    private JTextField yToeField;
 
     private DefaultTableModel defaultTable;
     private ArrayList<ArrayList<String>> list;
@@ -64,7 +64,7 @@ public class DataEditor extends javax.swing.JPanel{
         addSaveButton.addActionListener(e -> {
             boolean exeptions = false;
             try {
-                Database.addStudent(connection(), NaamToeField.getText(), VoornaamToeField.getText(), (Beroepsprofiel) BeroepToeCombo.getSelectedItem(), Integer.parseInt(JaarToeField.getText()), InfoToeArea.getText());
+                Database.addStudent(connection(), NaamToeField.getText(), VoornaamToeField.getText(), Integer.parseInt(xToeField.getText()), Integer.parseInt(yToeField.getText()), (Beroepsprofiel) BeroepToeCombo.getSelectedItem(), Integer.parseInt(JaarToeField.getText()), InfoToeArea.getText());
             } catch (Exception exception){
                 exeptions = true;
                 errorLabel.setForeground(Color.RED);
@@ -85,16 +85,19 @@ public class DataEditor extends javax.swing.JPanel{
                 int id = Database.getStudentId(connection(), (String) StudentenCombo.getSelectedItem());
                 Student student = Database.getStudentInfo(connection(), id);
                 if (!student.getNaam().equals(NaamBewField.getText()))
-                    Database.updateStudent(connection(), id, NaamBewField.getText(), null, Beroepsprofiel.NULL, null, null);
+                    Database.updateStudent(connection(), id, NaamBewField.getText(), null, null, null, Beroepsprofiel.NULL, null, null);
                 if (!student.getVoornaam().equals(VoorBewField.getText()))
-                    Database.updateStudent(connection(), id, null, VoornaamToeField.getText(), Beroepsprofiel.NULL, null, null);
+                    Database.updateStudent(connection(), id, null, VoorBewField.getText(), null, null, Beroepsprofiel.NULL, null, null);
                 if (student.getBeroepsprofiel() != BeroepBewCombo.getSelectedItem())
-                    Database.updateStudent(connection(), id, null, null, (Beroepsprofiel) BeroepBewCombo.getSelectedItem(), null, null);
+                    Database.updateStudent(connection(), id, null, null, null, null, (Beroepsprofiel) BeroepBewCombo.getSelectedItem(), null, null);
                 if (student.getInschrijvingsjaar() != Integer.parseInt(JaarBewField.getText()))
-                    Database.updateStudent(connection(), id, null, null, Beroepsprofiel.NULL, Integer.parseInt(JaarBewField.getText()), null);
+                    Database.updateStudent(connection(), id, null, null, null, null, Beroepsprofiel.NULL, Integer.parseInt(JaarBewField.getText()), null);
                 if (!student.getBeschrijving().equals(InfoArea.getText()))
-                    Database.updateStudent(connection(), id, null, null, Beroepsprofiel.NULL, null, InfoArea.getText());
-
+                    Database.updateStudent(connection(), id, null, null, null, null, Beroepsprofiel.NULL, null, InfoArea.getText());
+                if (student.getX() != Integer.parseInt(xBewField.getText()))
+                    Database.updateStudent(connection(), id, null, null, Integer.parseInt(xBewField.getText()), null, Beroepsprofiel.NULL, null, null);
+                if (student.getY() != Integer.parseInt(yBewField.getText()))
+                    Database.updateStudent(connection(), id, null, null, null, Integer.parseInt(yBewField.getText()), Beroepsprofiel.NULL, null, null);
 
             } catch (SQLException ex) {
                 error = true;
@@ -135,6 +138,8 @@ public class DataEditor extends javax.swing.JPanel{
             BeroepBewCombo.setSelectedItem(student.getBeroepsprofiel());
             JaarBewField.setText(Integer.toString(student.getInschrijvingsjaar()));
             InfoArea.setText(student.getBeschrijving());
+            xBewField.setText(Integer.toString(student.getX()));
+            yBewField.setText(Integer.toString(student.getY()));
         });
         deleteButton.addActionListener(e -> {
             if (StudentenCombo.getSelectedItem().equals("<null>"))
@@ -202,7 +207,7 @@ public class DataEditor extends javax.swing.JPanel{
 
     public DefaultTableModel createDefaultTableModel() throws SQLException {
         list = Database.getAllStudentInfo(connection());
-        String[] names = new String[]{"id", "Naam", "Voornaam", "Inschrijvingsjaar", "Beroepsprofiel", "Beschrijving"};
+        String[] names = new String[]{"id", "Naam", "Voornaam", "Inschrijvingsjaar", "x", "y", "Beroepsprofiel", "Beschrijving"};
         String[][] strings = new String[list.size()][list.get(0).size()];
         for (int i = 0; i < list.size(); i++){
             for (int j = 0; j < list.get(i).size(); j++){
@@ -218,6 +223,8 @@ public class DataEditor extends javax.swing.JPanel{
         BeroepToeCombo.setSelectedIndex(0);
         JaarToeField.setText("");
         InfoToeArea.setText("");
+        xToeField.setText("");
+        yToeField.setText("");
     }
 
     public void resetBewerken(){
@@ -226,6 +233,8 @@ public class DataEditor extends javax.swing.JPanel{
         BeroepBewCombo.setSelectedIndex(0);
         JaarBewField.setText("");
         InfoArea.setText("");
+        xBewField.setText("");
+        yBewField.setText("");
     }
 
     public Connection connection() throws  SQLException{
@@ -242,7 +251,7 @@ public class DataEditor extends javax.swing.JPanel{
         frame.setContentPane(new DataEditor().MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(laadAfbeelding("O-32x32"));
-        frame.setSize(800, 550);
+        frame.setSize(800, 650);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -277,7 +286,6 @@ public class DataEditor extends javax.swing.JPanel{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
 
         RightPanel = new JPanel();
         RightPanel.setOpaque(false);
