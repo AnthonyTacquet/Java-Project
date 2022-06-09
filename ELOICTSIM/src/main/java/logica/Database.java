@@ -159,6 +159,7 @@ public class Database {
 
         } catch (Exception exception){
             connection.rollback();
+            throw new Exception("Runtime error: " + exception.getMessage());
         } finally {
             connection.close();
         }
@@ -166,7 +167,7 @@ public class Database {
 
 
 
-    public static void removeStudent(Connection connection, int id) throws SQLException {
+    public static void removeStudent(Connection connection, int id) throws Exception {
 
         try {
             // Start transaction
@@ -191,7 +192,7 @@ public class Database {
             connection.commit();
         } catch (Exception exception){
             connection.rollback();
-            System.out.println(exception);
+            throw new Exception("Runtime error: " + exception.getMessage());
         } finally {
             connection.close();
         }

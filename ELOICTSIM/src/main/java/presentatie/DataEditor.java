@@ -51,8 +51,8 @@ public class DataEditor extends javax.swing.JPanel{
     private DefaultTableModel defaultTable;
     private ArrayList<ArrayList<String>> list;
 
-    private String username = "root";
-    private String password = "Azerty123";
+    private String username = "eloict";
+    private String password = "Azerty123!";
     private String dbms = "mysql";
     private String serverName = "localhost";
     private String portNumber = "3306";
@@ -83,10 +83,10 @@ public class DataEditor extends javax.swing.JPanel{
             boolean error = false;
             try {
                 int id = Database.getStudentId(connection(), (String) StudentenCombo.getSelectedItem());
-                Student student = Database.getStudentInfo(connection(), id);
-                if (!student.getNaam().equals(NaamBewField.getText()))
-                    Database.updateStudent(connection(), id, NaamBewField.getText(), null, null, null, Beroepsprofiel.NULL, null, null);
-                if (!student.getVoornaam().equals(VoorBewField.getText()))
+                //Student student = Database.getStudentInfo(connection(), id);
+                //if (!student.getNaam().equals(NaamBewField.getText()))
+                    Database.updateStudent(connection(), id, NaamBewField.getText(), VoorBewField.getText(), Integer.parseInt(xBewField.getText()), Integer.parseInt(yBewField.getText()), (Beroepsprofiel) BeroepBewCombo.getSelectedItem(), Integer.parseInt(JaarBewField.getText()), InfoArea.getText());
+                /*if (!student.getVoornaam().equals(VoorBewField.getText()))
                     Database.updateStudent(connection(), id, null, VoorBewField.getText(), null, null, Beroepsprofiel.NULL, null, null);
                 if (student.getBeroepsprofiel() != BeroepBewCombo.getSelectedItem())
                     Database.updateStudent(connection(), id, null, null, null, null, (Beroepsprofiel) BeroepBewCombo.getSelectedItem(), null, null);
@@ -97,7 +97,7 @@ public class DataEditor extends javax.swing.JPanel{
                 if (student.getX() != Integer.parseInt(xBewField.getText()))
                     Database.updateStudent(connection(), id, null, null, Integer.parseInt(xBewField.getText()), null, Beroepsprofiel.NULL, null, null);
                 if (student.getY() != Integer.parseInt(yBewField.getText()))
-                    Database.updateStudent(connection(), id, null, null, null, Integer.parseInt(yBewField.getText()), Beroepsprofiel.NULL, null, null);
+                    Database.updateStudent(connection(), id, null, null, null, Integer.parseInt(yBewField.getText()), Beroepsprofiel.NULL, null, null);*/
 
             } catch (SQLException ex) {
                 error = true;

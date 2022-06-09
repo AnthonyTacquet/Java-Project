@@ -26,8 +26,8 @@ public class EloictSimGui extends javax.swing.JPanel{
     private static final Color DEUR_KLEUR =new Color(211,221,242);//Mistblauw
     private static final Color INVISIBLE =new Color(0,0,0, 1);//TRANSPARENT
 
-    private String username = "root";
-    private String password = "Azerty123";
+    private String username = "eloict";
+    private String password = "Azerty123!";
     private String dbms = "mysql";
     private String serverName = "localhost";
     private String portNumber = "3306";
@@ -797,7 +797,6 @@ public class EloictSimGui extends javax.swing.JPanel{
             playSound("mario/sound/fireball");
             vuurballen.add(new Vuurbal(this.x, this.y, 4, links, true));
         }
-        System.out.println(vuurballen.size());
 
     }
 
@@ -893,7 +892,6 @@ public class EloictSimGui extends javax.swing.JPanel{
                 Student student = new Student();
                 student.setX(rs.getInt("x"));
                 student.setY(rs.getInt("y"));
-                System.out.println(student.getX());
                 student.setBeschrijving(rs.getString("beschrijving"));
                 student.setNaam(rs.getString("familienaam"));
                 student.setVoornaam(rs.getString("voornaam"));
