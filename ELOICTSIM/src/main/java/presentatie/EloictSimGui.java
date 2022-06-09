@@ -277,13 +277,12 @@ public class EloictSimGui extends javax.swing.JPanel{
 
             if (Meetkunde.cirkelOverlaptMetLijnstuk(deuren.get(i), x, y, rad)){
                 if (y1 == y2)
-                    if (x2 + radius <= x && x1 - radius >= x)
+                    if (x2 - radius >= x && x1 + radius <= x)
                         return false;
                 if (x1 == x2)
                     if (y2 + 2 - radius >= y && y1 - 2 + radius <= y)
                         return false;
             }
-
         }
         for (int i = 0; i < lokalen.size(); i++){
             if (Meetkunde.cirkelOverlaptMetRechthoek(lokalen.get(i), x, y, rad - 2))
@@ -865,9 +864,9 @@ public class EloictSimGui extends javax.swing.JPanel{
                 //ystem.out.println("x1: " + rs.getInt("y1") + "x2: "+ rs.getInt("y2"));
                 //deuren.add(new Deur(rs.getInt("x1"), rs.getInt("x2"), rs.getInt("y1"), rs.getInt("y2")));
                 Deur deur = new Deur();
-                deur.setX1(rs.getInt("y1"));
-                deur.setX2(rs.getInt("x1"));
-                deur.setY1(rs.getInt("x2"));
+                deur.setX1(rs.getInt("x1"));
+                deur.setX2(rs.getInt("x2"));
+                deur.setY1(rs.getInt("y1"));
                 deur.setY2(rs.getInt("y2"));
                 deuren.add(deur);
 
